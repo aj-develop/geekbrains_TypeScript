@@ -8,7 +8,7 @@ window.addEventListener('DOMContentLoaded', () => {
   renderSearchFormBlock()
   renderSearchStubBlock()
   renderToast(
-      {text: 'Это пример уведомления. Используйте его при необходимости', type: 'success'},
-      {name: 'Понял', handler: () => {console.log('Уведомление закрыто')}}
+    {text: 'Это пример уведомления. Используйте его при необходимости', type: 'success'},
+    {name: 'Понял', handler: () => {console.log('Уведомление закрыто')}}
   )
 })

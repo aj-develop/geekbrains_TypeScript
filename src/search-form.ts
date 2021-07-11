@@ -1,6 +1,70 @@
 import { renderBlock } from './lib.js'
 
-export function renderSearchFormBlock () {
+export function renderSearchFormBlock (checkinIn?: string, checkoutIn?: string) : void
+{
+  // дата сегодняшнего дня
+  const yesterday = new Date(Date.now())
+  // дата завтрашнего дня
+  const tomorrow = new Date(Date.now() + 24*60*60*1000)
+  // последний день следующего месяца
+  const lastDateOfNextMonth = new Date(yesterday.getFullYear(), yesterday.getMonth() + 2, 0)
+
+  // дата сегодняшнего дня в виде строки '2021-07-11'
+  const min = [
+    yesterday.getFullYear(),
+    (yesterday.getMonth()+1).toString().padStart(2, '0'),
+    yesterday.getDate().toString().padStart(2, '0')
+  ].join('-')
+
+  // дата последнего дня следующего месяца в виде строки '2021-08-31'
+  const max = [
+    lastDateOfNextMonth.getFullYear(),
+    (lastDateOfNextMonth.getMonth()+2).toString().padStart(2, '0'),
+    lastDateOfNextMonth.getDate().toString().padStart(2, '0')
+  ].join('-')
+
+  // checkin
+  let checkin = ''
+  if ( !checkinIn ||
+        Date.parse(checkinIn) < yesterday.getTime() ||
+          Date.parse(checkinIn) > lastDateOfNextMonth.getTime() ||
+            Date.parse(checkinIn) > Date.parse(checkoutIn)
+  ) {
+    checkin = [
+      tomorrow.getFullYear(),
+      (tomorrow.getMonth()+1).toString().padStart(2, '0'),
+      tomorrow.getDate().toString().padStart(2, '0')
+    ].join('-')
+  }
+  else {
+    checkin = checkinIn
+  }
+
+  // checkout
+  let checkout = ''
+  if ( !checkoutIn && !checkinIn ) {
+    const checkOutDefault = new Date(Date.now() + 3*24*60*60*1000)
+    checkout = [
+      checkOutDefault.getFullYear(),
+      (checkOutDefault.getMonth()+1).toString().padStart(2, '0'),
+      checkOutDefault.getDate().toString().padStart(2, '0')
+    ].join('-')
+  }
+  else if(!checkoutIn && checkinIn &&
+            Date.parse(checkinIn) > yesterday.getTime() &&
+              Date.parse(checkinIn) < (lastDateOfNextMonth.getTime() - 24*60*60*1000)
+  ) {
+    const checkoutNew = new Date(Date.parse(checkinIn) + 24*60*60*1000)
+    checkout = [
+      checkoutNew.getFullYear(),
+      (checkoutNew.getMonth()+1).toString().padStart(2, '0'),
+      checkoutNew.getDate().toString().padStart(2, '0')
+    ].join('-')
+  }
+  else {
+    checkout = checkoutIn
+  }
+
   renderBlock(
     'search-form-block',
     `
@@ -20,11 +84,11 @@ export function renderSearchFormBlock () {
         <div class="row">
           <div>
             <label for="check-in-date">Дата заезда</label>
-            <input id="check-in-date" type="date" value="2021-05-11" min="2021-05-11" max="2021-06-30" name="checkin" />
+            <input id="check-in-date" type="date" value="${checkin}" min="${min}" max="${max}" name="checkin" />
           </div>
           <div>
             <label for="check-out-date">Дата выезда</label>
-            <input id="check-out-date" type="date" value="2021-05-13" min="2021-05-11" max="2021-06-30" name="checkout" />
+            <input id="check-out-date" type="date" value="${checkout}" min="${min}" max="${max}" name="checkout" />
           </div>
           <div>
             <label for="max-price">Макс. цена суток</label>

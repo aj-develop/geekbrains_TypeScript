@@ -1,9 +1,11 @@
-export function renderBlock (elementId, html) {
+export function renderBlock (elementId: string, html: string) : void
+{
   const element = document.getElementById(elementId)
-  element.innerHtml = html
+  element.innerHTML = html
 }
 
-export function renderToast (message, action) {
+export function renderToast (message, action?) : void
+{
   let messageText = ''
   
   if (message != null) {
@@ -29,4 +31,13 @@ export function renderToast (message, action) {
       renderToast(null)
     }
   }
+}
+
+/**
+ * convert date to string '2021-07-11'
+ * @param date
+ */
+export function convertDateToString(date: Date) :string
+{
+  return date.toISOString().substr(0,10)
 }

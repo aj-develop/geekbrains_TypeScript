@@ -32,3 +32,12 @@ export function renderToast (message, action?) : void
     }
   }
 }
+
+/**
+ * convert date to string '2021-07-11'
+ * @param date
+ */
+export function convertDateToString(date: Date) :string
+{
+  return date.toISOString().substr(0,10)
+}

@@ -1,4 +1,4 @@
-import { renderBlock } from './lib.js'
+import { renderBlock, convertDateToString } from './lib.js'
 
 export function renderSearchFormBlock (checkinIn?: string, checkoutIn?: string) : void
 {
@@ -10,18 +10,9 @@ export function renderSearchFormBlock (checkinIn?: string, checkoutIn?: string) 
   const lastDateOfNextMonth = new Date(today.getFullYear(), today.getMonth() + 2, 0)
 
   // дата сегодняшнего дня в виде строки '2021-07-11'
-  const min = [
-    today.getFullYear(),
-    (today.getMonth()+1).toString().padStart(2, '0'),
-    today.getDate().toString().padStart(2, '0')
-  ].join('-')
-
+  const min = convertDateToString(today)
   // дата последнего дня следующего месяца в виде строки '2021-08-31'
-  const max = [
-    lastDateOfNextMonth.getFullYear(),
-    (lastDateOfNextMonth.getMonth()+2).toString().padStart(2, '0'),
-    lastDateOfNextMonth.getDate().toString().padStart(2, '0')
-  ].join('-')
+  const max = convertDateToString(lastDateOfNextMonth)
 
   // checkin
   let checkin = ''
@@ -30,11 +21,7 @@ export function renderSearchFormBlock (checkinIn?: string, checkoutIn?: string) 
           Date.parse(checkinIn) > lastDateOfNextMonth.getTime() ||
             Date.parse(checkinIn) > Date.parse(checkoutIn)
   ) {
-    checkin = [
-      tomorrow.getFullYear(),
-      (tomorrow.getMonth()+1).toString().padStart(2, '0'),
-      tomorrow.getDate().toString().padStart(2, '0')
-    ].join('-')
+    checkin = convertDateToString(tomorrow)
   }
   else {
     checkin = checkinIn
@@ -44,22 +31,14 @@ export function renderSearchFormBlock (checkinIn?: string, checkoutIn?: string) 
   let checkout = ''
   if ( !checkoutIn && !checkinIn ) {
     const checkOutDefault = new Date(Date.now() + 3*24*60*60*1000)
-    checkout = [
-      checkOutDefault.getFullYear(),
-      (checkOutDefault.getMonth()+1).toString().padStart(2, '0'),
-      checkOutDefault.getDate().toString().padStart(2, '0')
-    ].join('-')
+    checkout = convertDateToString(checkOutDefault)
   }
   else if(!checkoutIn && checkinIn &&
             Date.parse(checkinIn) > today.getTime() &&
               Date.parse(checkinIn) < (lastDateOfNextMonth.getTime() - 24*60*60*1000)
   ) {
     const checkoutNew = new Date(Date.parse(checkinIn) + 24*60*60*1000)
-    checkout = [
-      checkoutNew.getFullYear(),
-      (checkoutNew.getMonth()+1).toString().padStart(2, '0'),
-      checkoutNew.getDate().toString().padStart(2, '0')
-    ].join('-')
+    checkout = convertDateToString(checkoutNew)
   }
   else {
     checkout = checkoutIn

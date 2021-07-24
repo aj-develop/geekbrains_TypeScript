@@ -1,30 +1,32 @@
 import { renderBlock } from './lib.js'
+import { SearchFormData } from './interfaces/searchFormData.js'
+import { SearchCallback } from './interfaces/searchCallback.js'
 
-export function renderSearchStubBlock () {
+export function renderSearchStubBlock () : void {
   renderBlock(
     'search-results-block',
     `
     <div class="before-results-block">
-      <img src="img/start-search.png" />
+      <img src="img/start-search.png"  alt="start search"/>
       <p>Чтобы начать поиск, заполните форму и&nbsp;нажмите "Найти"</p>
     </div>
     `
   )
 }
 
-export function renderEmptyOrErrorSearchBlock (reasonMessage) {
+export function renderEmptyOrErrorSearchBlock (reasonMessage: string) : void {
   renderBlock(
     'search-results-block',
     `
     <div class="no-results-block">
-      <img src="img/no-results.png" />
+      <img src="img/no-results.png"  alt="no results"/>
       <p>${reasonMessage}</p>
     </div>
     `
   )
 }
 
-export function renderSearchResultsBlock () {
+export function renderSearchResultsBlock () : void {
   renderBlock(
     'search-results-block',
     `
@@ -85,4 +87,8 @@ export function renderSearchResultsBlock () {
     </ul>
     `
   )
+}
+
+export function search (searchFormData : SearchFormData, callback?: SearchCallback) :void {
+  console.log(searchFormData)
 }

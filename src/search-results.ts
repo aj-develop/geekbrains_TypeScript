@@ -1,6 +1,7 @@
-import { renderBlock } from './lib.js'
+import { renderBlock, renderToast } from './lib.js'
 import { SearchFormData } from './interfaces/searchFormData.js'
-import { SearchCallback } from './interfaces/searchCallback.js'
+import { Place } from './interfaces/place.js'
+import { FavoriteStorage } from './storage-helper.js'
 
 export function renderSearchStubBlock () : void {
   renderBlock(
@@ -14,7 +15,7 @@ export function renderSearchStubBlock () : void {
   )
 }
 
-export function renderEmptyOrErrorSearchBlock (reasonMessage: string) : void {
+export function renderEmptyOrErrorSearchBlock (reasonMessage?: string) : void {
   renderBlock(
     'search-results-block',
     `
@@ -26,7 +27,38 @@ export function renderEmptyOrErrorSearchBlock (reasonMessage: string) : void {
   )
 }
 
-export function renderSearchResultsBlock () : void {
+export function renderSearchResultsBlock (places: Array<Place>) : void {
+  let placesHTML = '';
+  const favoriteStorage = new FavoriteStorage()
+
+  places.forEach( (place) => {
+    placesHTML += `<li class="result">
+        <div class="result-container">
+          <div class="result-img-container">
+            <div
+                data-id="${place.id}"
+                data-name="${place.name}"
+                data-image="${place.image}"
+                class="favorites ${favoriteStorage.isFavoriteItemsInStorage(place.id) ? ' active' : ''}"></div>
+            <img class="result-img" src="${place.image}" alt="">
+          </div>
+          <div class="result-info">
+            <div class="result-info--header">
+              <p>${place.name}</p>
+              <p class="price">${place.price}&#8381;</p>
+            </div>
+            <div class="result-info--map"><i class="map-icon"></i> ${place.remoteness}км от вас</div>
+            <div class="result-info--descr">${place.description}</div>
+            <div class="result-info--footer">
+              <div>
+                <button>Забронировать</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>`
+  })
+
   renderBlock(
     'search-results-block',
     `
@@ -41,54 +73,54 @@ export function renderSearchResultsBlock () : void {
             </select>
         </div>
     </div>
-    <ul class="results-list">
-      <li class="result">
-        <div class="result-container">
-          <div class="result-img-container">
-            <div class="favorites active"></div>
-            <img class="result-img" src="./img/result-1.png" alt="">
-          </div>	
-          <div class="result-info">
-            <div class="result-info--header">
-              <p>YARD Residence Apart-hotel</p>
-              <p class="price">13000&#8381;</p>
-            </div>
-            <div class="result-info--map"><i class="map-icon"></i> 2.5км от вас</div>
-            <div class="result-info--descr">Комфортный апарт-отель в самом сердце Санкт-Петербрга. К услугам гостей номера с видом на город и бесплатный Wi-Fi.</div>
-            <div class="result-info--footer">
-              <div>
-                <button>Забронировать</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li class="result">
-        <div class="result-container">
-          <div class="result-img-container">
-            <div class="favorites"></div>
-            <img class="result-img" src="./img/result-2.png" alt="">
-          </div>	
-          <div class="result-info">
-            <div class="result-info--header">
-              <p>Akyan St.Petersburg</p>
-              <p class="price">13000&#8381;</p>
-            </div>
-            <div class="result-info--map"><i class="map-icon"></i> 1.1км от вас</div>
-            <div class="result-info--descr">Отель Akyan St-Petersburg с бесплатным Wi-Fi на всей территории расположен в историческом здании Санкт-Петербурга.</div>
-            <div class="result-info--footer">
-              <div>
-                <button>Забронировать</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </li>
-    </ul>
-    `
+    <ul class="results-list">` + placesHTML + '</ul>'
   )
 }
 
-export function search (searchFormData : SearchFormData, callback?: SearchCallback) :void {
-  console.log(searchFormData)
+/**
+ * search places
+ * @param searchFormData
+ */
+export async function search (searchFormData : SearchFormData)
+{
+  const checkin = dateStringToUnixStamp(searchFormData.checkin)
+  const checkout = dateStringToUnixStamp(searchFormData.checkout)
+
+  let url = 'http://localhost:3030/places?' +
+    `checkInDate=${checkin}&` +
+    `checkOutDate=${checkout}&` +
+    `coordinates=${searchFormData.cityCoordinates}`
+
+  console.debug(searchFormData.price)
+
+  if (+searchFormData.price > 0) {
+    console.debug(searchFormData.price)
+    url += `&maxPrice=${searchFormData.price}`
+  }
+
+  try {
+    const response = await fetch(url)
+    const responseText = await response.text()
+    return JSON.parse(responseText)
+  } catch (error) {
+    console.error('Looks like there was a problem: \n', error);
+  }
+}
+
+/**
+ * dateStringToUnixStamp
+ * @param dateString
+ * @return number
+ */
+function dateStringToUnixStamp(dateString : string) : number {
+  return dateToUnixStamp(new Date(dateString))
+}
+
+/**
+ * dateToUnixStamp
+ * @param date
+ * @return number
+ */
+function dateToUnixStamp(date: Date) : number {
+  return date.getTime() / 1000
 }

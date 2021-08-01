@@ -1,10 +1,12 @@
 import { renderBlock } from './lib.js'
 import { User } from './interfaces/user.js'
+import {FavoriteStorage} from './storage-helper.js'
 
 export function renderUserBlock (user: User) : void
 {
-  const hasFavoriteItems = user.favoritesAmount > 0
-  const favoritesCaption = hasFavoriteItems ? user.favoritesAmount : 'ничего нет'
+  const favoriteStorage = new FavoriteStorage()
+  const hasFavoriteItems = favoriteStorage.getFavoritesAmount() > 0
+  const favoritesCaption = hasFavoriteItems ? favoriteStorage.getFavoritesAmount() : 'ничего нет'
 
   renderBlock(
     'user-block',

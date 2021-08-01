@@ -1,5 +1,6 @@
 import {IStorageItem} from './interfaces/IStorageItem.js'
 import {User} from './interfaces/user.js'
+import {Place} from './interfaces/place.js'
 
 export class StorageItem {
     key: string;
@@ -80,15 +81,57 @@ export class LocalStorageWorker {
     }
 }
 
-export class UserStorage {
+export class FavoriteStorage {
   storageWorker: LocalStorageWorker;
-
-  // main key that use for store user
   storageKey: string
 
-  constructor(storageKey: string) {
+  constructor() {
     this.storageWorker = new LocalStorageWorker();
-    this.storageKey = storageKey
+    this.storageKey = 'favoriteItems'
+  }
+
+  isFavoriteItemsInStorage(id : number) : boolean {
+    const storageData = this.get()
+    const findIndex = storageData.findIndex(place => Number(place.id) === Number(id))
+
+    return findIndex >= 0
+  }
+
+  getFavoritesAmount () : number {
+    const favorites = this.get()
+    return favorites ? favorites.length : 0
+  }
+
+  get() : Array<Place> {
+    const storageData = this.storageWorker.get(this.storageKey)
+    if (storageData != null && storageData.length > 0) {
+      return   JSON.parse(storageData)
+    }
+  }
+
+  save(favorites : Array<Place>) : void {
+    this.storageWorker.add(this.storageKey, JSON.stringify(favorites))
+  }
+
+  saveInitial(favoriteItem: DOMStringMap) : void {
+    const set = []
+    set[0] = favoriteItem
+    this.storageWorker.add(this.storageKey, JSON.stringify(set))
+  }
+
+  clear() : void {
+    this.storageWorker.remove(this.storageKey)
+  }
+
+}
+
+export class UserStorage {
+  storageWorker: LocalStorageWorker;
+  storageKey: string
+
+  constructor() {
+    this.storageWorker = new LocalStorageWorker();
+    this.storageKey = 'user'
   }
 
   // save to storage (save as JSON string)

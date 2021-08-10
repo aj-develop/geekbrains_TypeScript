@@ -47,13 +47,13 @@ export function renderSearchFormBlock (checkinIn?: string, checkoutIn?: string) 
   renderBlock(
     'search-form-block',
     `
-    <form id="search-form">
+    <form>
       <fieldset class="search-filedset">
         <div class="row">
           <div>
             <label for="city">Город</label>
-            <input name="city" id="city" type="text" readonly="readonly" value="Санкт-Петербург" />
-            <input name="cityCoordinates" type="hidden" readonly="readonly" value="59.9386,30.3141" />
+            <input id="city" type="text" disabled value="Санкт-Петербург" />
+            <input type="hidden" disabled value="59.9386,30.3141" />
           </div>
           <!--<div class="providers">
             <label><input type="checkbox" name="provider" value="homy" checked /> Homy</label>
@@ -74,7 +74,7 @@ export function renderSearchFormBlock (checkinIn?: string, checkoutIn?: string) 
             <input id="max-price" type="text" value="" name="price" class="max-price" />
           </div>
           <div>
-            <div><button type="submit" ">Найти</button></div>
+            <div><button>Найти</button></div>
           </div>
         </div>
       </fieldset>

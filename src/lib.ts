@@ -1,40 +1,9 @@
-import {FavoriteStorage} from './storage-helper.js'
-import {Place} from './interfaces/place';
-
 export function renderBlock (elementId: string, html: string) : void
 {
   const element = document.getElementById(elementId)
   element.innerHTML = html
 }
 
-export function toggleFavoriteItem (this: HTMLElement) : void
-{
-  const placeIn = this.dataset
-  const favoriteStorage = new FavoriteStorage()
-  const favoriteItemsInStorage = favoriteStorage.get()
-
-  if (favoriteItemsInStorage){
-    const findIndex = favoriteItemsInStorage.findIndex(place => Number(place.id) === Number(placeIn.id))
-    if (findIndex >= 0) { // remove item from favoriteItems storage
-      favoriteItemsInStorage.splice(findIndex,1)
-      this.classList.remove('active');
-      if (favoriteItemsInStorage.length > 0) { // save items to favoriteItems storage
-        favoriteStorage.save(favoriteItemsInStorage)
-      } else { // clear favoriteItems storage
-        favoriteStorage.clear()
-      }
-    } else { // add item to favoriteItems storage
-      const placeInObject : Place = {}
-      Object.assign(placeInObject, {...placeIn})
-      favoriteItemsInStorage.push(placeInObject)
-      favoriteStorage.save(favoriteItemsInStorage)
-      this.classList.add('active');
-    }
-  } else { // initial
-    favoriteStorage.saveInitial(placeIn)
-    this.classList.add('active');
-  }
-}
 export function renderToast (message, action?) : void
 {
   let messageText = ''
@@ -72,4 +41,3 @@ export function convertDateToString(date: Date) :string
 {
   return date.toISOString().substr(0,10)
 }
-

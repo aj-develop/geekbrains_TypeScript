@@ -1,9 +1,8 @@
 export interface SearchFormData {
-  checkin?: string,
-  checkout?: string,
-  city?: string
-  cityCoordinates?: string,
-  price?: number,
-  homy?: boolean,
-  flatRent?: boolean
+  checkInDate: string,
+  checkOutDate: string,
+  city: string
+  cityCoordinates: string,
+  priceLimit: number,
+  provider: []
 }

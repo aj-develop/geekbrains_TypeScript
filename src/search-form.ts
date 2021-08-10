@@ -55,23 +55,23 @@ export function renderSearchFormBlock (checkinIn?: string, checkoutIn?: string) 
             <input name="city" id="city" type="text" readonly="readonly" value="Санкт-Петербург" />
             <input name="cityCoordinates" type="hidden" readonly="readonly" value="59.9386,30.3141" />
           </div>
-          <!--<div class="providers">
+          <div class="providers">
             <label><input type="checkbox" name="provider" value="homy" checked /> Homy</label>
-            <label><input type="checkbox" name="provider" value="flat-rent" checked /> FlatRent</label>
-          </div>--!>
+            <label><input type="checkbox" name="provider" value="flatRent" checked /> FlatRent</label>
+          </div>
         </div>
         <div class="row">
           <div>
             <label for="check-in-date">Дата заезда</label>
-            <input id="check-in-date" type="date" value="${checkin}" min="${min}" max="${max}" name="checkin" />
+            <input id="check-in-date" type="date" value="${checkin}" min="${min}" max="${max}" name="checkInDate" />
           </div>
           <div>
             <label for="check-out-date">Дата выезда</label>
-            <input id="check-out-date" type="date" value="${checkout}" min="${min}" max="${max}" name="checkout" />
+            <input id="check-out-date" type="date" value="${checkout}" min="${min}" max="${max}" name="checkOutDate" />
           </div>
           <div>
             <label for="max-price">Макс. цена суток</label>
-            <input id="max-price" type="text" value="" name="price" class="max-price" />
+            <input id="max-price" type="text" value="" name="priceLimit" class="max-price" />
           </div>
           <div>
             <div><button type="submit" ">Найти</button></div>

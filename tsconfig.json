@@ -1,15 +1,16 @@
 {
   "compilerOptions": {
     "outDir": "public/scripts",
-    "target": "ES2017",
-    "module": "ES2020",
+    "target": "ES2015",
+    "module": "ES2015",
     "moduleResolution": "node",
     "lib": [
       "dom",
       "ES2015"
-    ]
+    ],
+    "allowJs": true
   },
-  "files": [
-    "src/index.ts"
+  "include": [
+    "src/**/*"
   ]
 }

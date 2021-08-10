@@ -21,13 +21,12 @@ window.addEventListener('DOMContentLoaded', () => {
   renderSearchFormBlock()
 
   const searchFormData: SearchFormData = {
-    checkin: '',
-    checkout: '',
+    checkInDate: '',
+    checkOutDate: '',
     city: '',
     cityCoordinates: '',
-    flatRent: false,
-    homy: false,
-    price: 0
+    provider: [],
+    priceLimit: 0
   }
 
   const form: HTMLFormElement = document.querySelector('#search-form')
@@ -35,15 +34,27 @@ window.addEventListener('DOMContentLoaded', () => {
     const formData = new FormData(form)
     Object.keys(searchFormData).forEach((element) => {
       if (formData.get(element)){
-        searchFormData[element] = formData.get(element)
+        element === 'provider' ?
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          searchFormData[element] = formData.getAll(element) :
+          searchFormData[element] = formData.get(element)
       }
     });
     search(searchFormData)
-      .then(places => {
-        if (places.length > 0) {
+      .then(placesIn => {
+
+        let places;
+        if (placesIn.length > 0) {
+          if (placesIn.length === 1) {
+            places = placesIn[0]
+          } else if (placesIn.length === 2) {
+            places = [ ...placesIn[0], ...placesIn[1] ]
+          }
+          console.log(places)
           renderSearchResultsBlock(places)
           const divFavorites = document.querySelectorAll('div.favorites')
-          divFavorites.forEach( (element) => {
+          divFavorites.forEach((element) => {
             element?.addEventListener('click', toggleFavoriteItem)
           })
         } else {
@@ -57,8 +68,4 @@ window.addEventListener('DOMContentLoaded', () => {
   // тест - работает
   // renderSearchFormBlock('2021-07-25', '2021-08-03')
   renderSearchStubBlock()
-  renderToast(
-    {text: 'Это пример уведомления. Используйте его при необходимости', type: 'success'},
-    {name: 'Понял', handler: () => {console.log('Уведомление закрыто')}}
-  )
 })

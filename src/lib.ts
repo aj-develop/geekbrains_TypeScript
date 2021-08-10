@@ -24,9 +24,9 @@ export function toggleFavoriteItem (this: HTMLElement) : void
         favoriteStorage.clear()
       }
     } else { // add item to favoriteItems storage
-      const placeInObject : Place = {}
+      const placeInObject : Partial<Place> = {}
       Object.assign(placeInObject, {...placeIn})
-      favoriteItemsInStorage.push(placeInObject)
+      favoriteItemsInStorage.push(<Place>placeInObject)
       favoriteStorage.save(favoriteItemsInStorage)
       this.classList.add('active');
     }
@@ -71,5 +71,14 @@ export function renderToast (message, action?) : void
 export function convertDateToString(date: Date) :string
 {
   return date.toISOString().substr(0,10)
+}
+
+/**
+ * convert string '2021-07-11' to date
+ * @param string
+ */
+export function convertStringToDate(dateString : string) :Date
+{
+  return new Date(dateString)
 }
 

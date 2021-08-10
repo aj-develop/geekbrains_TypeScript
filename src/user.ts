@@ -1,17 +1,20 @@
 import { renderBlock } from './lib.js'
+import { User } from './interfaces/user.js'
+import {FavoriteStorage} from './storage-helper.js'
 
-export function renderUserBlock (name: string, avatar: string, favoriteItemsAmount: number) : void
+export function renderUserBlock (user: User) : void
 {
-  const hasFavoriteItems = favoriteItemsAmount > 0
-  const favoritesCaption = hasFavoriteItems ? favoriteItemsAmount : 'ничего нет'
+  const favoriteStorage = new FavoriteStorage()
+  const hasFavoriteItems = favoriteStorage.getFavoritesAmount() > 0
+  const favoritesCaption = hasFavoriteItems ? favoriteStorage.getFavoritesAmount() : 'ничего нет'
 
   renderBlock(
     'user-block',
     `
     <div class="header-container">
-      <img class="avatar" src="${avatar}" alt="${name}" title="${name}" />
+      <img class="avatar" src="${user.avatarUrl}" alt="${user.name}" title="${user.name}" />
       <div class="info">
-          <p class="name">${name}</p>
+          <p class="name">${user.name}</p>
           <p class="fav">
             <i class="heart-icon${hasFavoriteItems ? ' active' : ''}"></i>${favoritesCaption}
           </p>

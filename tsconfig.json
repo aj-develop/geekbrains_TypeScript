@@ -2,8 +2,12 @@
   "compilerOptions": {
     "outDir": "public/scripts",
     "target": "ES2017",
-    "module": "ES2017",
-    "moduleResolution": "node"
+    "module": "ES2020",
+    "moduleResolution": "node",
+    "lib": [
+      "dom",
+      "ES2015"
+    ]
   },
   "files": [
     "src/index.ts"

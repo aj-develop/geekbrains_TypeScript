@@ -90,11 +90,14 @@ export class FavoriteStorage {
     this.storageKey = 'favoriteItems'
   }
 
-  isFavoriteItemsInStorage(id : number) : boolean {
+  isFavoriteItemsInStorage(id : string) : boolean {
     const storageData = this.get()
-    const findIndex = storageData.findIndex(place => Number(place.id) === Number(id))
-
-    return findIndex >= 0
+    let isFavoriteItemsInStorage = false
+    if (storageData) {
+      const findIndex = storageData.findIndex(place => String(place.id) === String(id))
+      isFavoriteItemsInStorage = findIndex >= 0
+    }
+    return isFavoriteItemsInStorage
   }
 
   getFavoritesAmount () : number {

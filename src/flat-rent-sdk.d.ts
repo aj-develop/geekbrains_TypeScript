@@ -1,4 +1,4 @@
-import {Place} from './interfaces/place.js';
+import { FlatRent } from './Classes/Domain/Model/Providers/FlatRent.js';
 
 export function cloneDate(date: Date) : Date
 export function addDays(date : Date, days : number) : Date
@@ -9,7 +9,7 @@ export interface searchObject {
   priceLimit: number
 }
 export class FlatRentSdk {
-  get(id : string) : Promise<Place|null>
-  search(parameters : searchObject) : [Place]
+  get(id : string) : Promise<FlatRent|null>
+  search(parameters : searchObject) : Promise<[FlatRent] | null>
   book(flatId : number, checkInDate : Date, checkOutDate: Date) : number
 }

@@ -3,15 +3,15 @@ import {
   renderSearchStubBlock,
   search,
   renderSearchResultsBlock,
-  renderEmptyOrErrorSearchBlock
+  renderEmptyOrErrorSearchBlock,
+  renderSearchResultsHeader
 } from './search-results.js'
 import { renderUserBlock } from './user.js'
-import {
-  renderToast,
-  toggleFavoriteItem
-} from './lib.js'
+import { toggleFavoriteItem, renderBlock } from './lib.js'
 import { UserStorage } from './storage-helper.js'
-import { SearchFormData } from './interfaces/searchFormData.js'
+import { SearchInterface } from './Classes/Domain/Model/SearchInterface.js'
+import { Accommodation } from './Classes/Domain/Model/Accommodation.js';
+import { sortPriceASC, sortByMethod} from './Classes/Utility/Sort.js'
 
 window.addEventListener('DOMContentLoaded', () => {
   const userStorage = new UserStorage()
@@ -20,52 +20,63 @@ window.addEventListener('DOMContentLoaded', () => {
   renderUserBlock(user)
   renderSearchFormBlock()
 
-  const searchFormData: SearchFormData = {
+  const filter: SearchInterface = {
     checkInDate: '',
     checkOutDate: '',
     city: '',
     cityCoordinates: '',
-    provider: [],
-    priceLimit: 0
+    priceLimit: '',
+    provider: []
   }
 
   const form: HTMLFormElement = document.querySelector('#search-form')
   form.onsubmit = () => {
     const formData = new FormData(form)
-    Object.keys(searchFormData).forEach((element) => {
+    Object.keys(filter).forEach((element) => {
       if (formData.get(element)){
         element === 'provider' ?
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          searchFormData[element] = formData.getAll(element) :
-          searchFormData[element] = formData.get(element)
+          filter[element] = formData.getAll(element) :
+          filter[element] = formData.get(element)
       }
     });
-    search(searchFormData)
-      .then(placesIn => {
-
-        let places;
-        if (placesIn.length > 0) {
-          if (placesIn.length === 1) {
-            places = placesIn[0]
-          } else if (placesIn.length === 2) {
-            places = [ ...placesIn[0], ...placesIn[1] ]
-          }
-          console.log(places)
-          renderSearchResultsBlock(places)
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    search(filter)
+      .then(results => {
+        const allResults: Accommodation[] = [].concat(results[0], results[1]).filter(item => item)
+        if (allResults.length > 0) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          renderSearchResultsHeader()
+          renderSearchResultsBlock(allResults.sort(sortPriceASC))
           const divFavorites = document.querySelectorAll('div.favorites')
           divFavorites.forEach((element) => {
             element?.addEventListener('click', toggleFavoriteItem)
           })
-        } else {
+          const resultsFilter = document.querySelector('#results-filter');
+          resultsFilter.addEventListener(
+            'change',
+            sortAllResults.bind(this, allResults)
+          );
+        }
+        else {
           renderEmptyOrErrorSearchBlock('По вашему запросу ничего не найдено :(')
         }
       })
     return false;
   };
-
-
-  // тест - работает
-  // renderSearchFormBlock('2021-07-25', '2021-08-03')
   renderSearchStubBlock()
 })
+
+function sortAllResults(accommodations: Accommodation[], event: Event) : void
+{
+  const eventTargetElement = <HTMLSelectElement>event.target;
+  if (eventTargetElement){
+    const index = eventTargetElement.options.selectedIndex;
+    accommodations.sort(sortByMethod[eventTargetElement.options[index].value]);
+    renderBlock('search-results-list', '')
+    renderSearchResultsBlock(accommodations)
+  }
+}

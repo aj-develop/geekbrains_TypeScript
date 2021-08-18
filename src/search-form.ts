@@ -16,6 +16,8 @@ export function renderSearchFormBlock (checkinIn?: string, checkoutIn?: string) 
 
   // checkin
   let checkin = ''
+  checkinIn = checkinIn ?? ''
+  checkoutIn = checkoutIn ?? ''
   if ( !checkinIn ||
         Date.parse(checkinIn) < today.getTime() ||
           Date.parse(checkinIn) > lastDateOfNextMonth.getTime() ||
@@ -41,7 +43,7 @@ export function renderSearchFormBlock (checkinIn?: string, checkoutIn?: string) 
     checkout = convertDateToString(checkoutNew)
   }
   else {
-    checkout = checkoutIn
+    checkout = checkoutIn ?? ''
   }
 
   renderBlock(

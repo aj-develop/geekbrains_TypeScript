@@ -1,13 +1,13 @@
 import {IStorageItem} from './interfaces/IStorageItem.js'
 import {User} from './interfaces/user.js'
-import {Place} from './interfaces/place.js'
+import {Accommodation} from './Classes/Domain/Model/Accommodation.js';
 
 export class StorageItem {
     key: string;
     value: any;
 
     constructor(data: IStorageItem) {
-      this.key = data.key;
+      this.key = data.key ?? '';
       this.value = data.value;
     }
 }
@@ -31,8 +31,12 @@ export class LocalStorageWorker {
       const list = new Array<StorageItem>()
 
       for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i)
-        const value = localStorage.getItem(key)
+        const key = localStorage.key(i) ?? ''
+        let value = ''
+        if (key !== ''){
+          value = localStorage.getItem(key) ?? ''
+        }
+
 
         list.push(new StorageItem({
           key: key,
@@ -49,8 +53,10 @@ export class LocalStorageWorker {
 
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i)
-        const value = localStorage.getItem(key)
-
+        let value = ''
+        if (key != null){
+          value = localStorage.getItem(key) ?? ''
+        }
         list.push(value)
       }
 
@@ -58,7 +64,7 @@ export class LocalStorageWorker {
     }
 
     // get one item by key from storage
-    get(key: string) : string {
+    get(key: string) : string | null {
       if (this.localStorageSupported) {
         return localStorage.getItem(key)
       } else {
@@ -94,7 +100,7 @@ export class FavoriteStorage {
     const storageData = this.get()
     let isFavoriteItemsInStorage = false
     if (storageData) {
-      const findIndex = storageData.findIndex(place => String(place.id) === String(id))
+      const findIndex = storageData.findIndex(place => String(place.getId) === String(id))
       isFavoriteItemsInStorage = findIndex >= 0
     }
     return isFavoriteItemsInStorage
@@ -105,20 +111,22 @@ export class FavoriteStorage {
     return favorites ? favorites.length : 0
   }
 
-  get() : Array<Place> {
+  get() : Array<Accommodation> | undefined {
     const storageData = this.storageWorker.get(this.storageKey)
     if (storageData != null && storageData.length > 0) {
       return   JSON.parse(storageData)
     }
   }
 
-  save(favorites : Array<Place>) : void {
+  save(favorites : Array<Accommodation>) : void {
     this.storageWorker.add(this.storageKey, JSON.stringify(favorites))
   }
 
   saveInitial(favoriteItem: DOMStringMap) : void {
-    const set = []
-    set[0] = favoriteItem
+    const set : DOMStringMap[] = []
+    if(favoriteItem != null){
+      set[0] = favoriteItem
+    }
     this.storageWorker.add(this.storageKey, JSON.stringify(set))
   }
 
@@ -148,7 +156,7 @@ export class UserStorage {
     this.storageWorker.add(this.storageKey, jsonUser)
   }
 
-  getUserData() : User {
+  getUserData() : User | undefined {
     const storageData = this.storageWorker.get(this.storageKey)
 
     if (storageData != null && storageData.length > 0) {

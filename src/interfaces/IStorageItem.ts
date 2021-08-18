@@ -1,4 +1,4 @@
 export interface IStorageItem {
-  key: string;
-  value: any;
+  key: string | null;
+  value: any | null;
 }

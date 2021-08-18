@@ -1,10 +1,12 @@
 import {FavoriteStorage} from './storage-helper.js'
-import {Place} from './interfaces/place';
+import { Accommodation } from './Classes/Domain/Model/Accommodation.js'
 
 export function renderBlock (elementId: string, html: string) : void
 {
   const element = document.getElementById(elementId)
-  element.innerHTML = html
+  if (element != null){
+    element.innerHTML = html
+  }
 }
 
 export function toggleFavoriteItem (this: HTMLElement) : void
@@ -14,7 +16,7 @@ export function toggleFavoriteItem (this: HTMLElement) : void
   const favoriteItemsInStorage = favoriteStorage.get()
 
   if (favoriteItemsInStorage){
-    const findIndex = favoriteItemsInStorage.findIndex(place => Number(place.id) === Number(placeIn.id))
+    const findIndex = favoriteItemsInStorage.findIndex(place => String(place.getId()) === String(placeIn.id))
     if (findIndex >= 0) { // remove item from favoriteItems storage
       favoriteItemsInStorage.splice(findIndex,1)
       this.classList.remove('active');
@@ -24,9 +26,9 @@ export function toggleFavoriteItem (this: HTMLElement) : void
         favoriteStorage.clear()
       }
     } else { // add item to favoriteItems storage
-      const placeInObject : Partial<Place> = {}
+      const placeInObject : Partial<Accommodation> = {}
       Object.assign(placeInObject, {...placeIn})
-      favoriteItemsInStorage.push(<Place>placeInObject)
+      favoriteItemsInStorage.push(<Accommodation>placeInObject)
       favoriteStorage.save(favoriteItemsInStorage)
       this.classList.add('active');
     }
@@ -35,7 +37,10 @@ export function toggleFavoriteItem (this: HTMLElement) : void
     this.classList.add('active');
   }
 }
-export function renderToast (message, action?) : void
+export function renderToast (
+  message: { type: string, text: string } | null,
+  action?: { name: string, handler: () => void }
+) : void
 {
   let messageText = ''
   
@@ -75,7 +80,7 @@ export function convertDateToString(date: Date) :string
 
 /**
  * convert string '2021-07-11' to date
- * @param string
+ * @param dateString
  */
 export function convertStringToDate(dateString : string) :Date
 {

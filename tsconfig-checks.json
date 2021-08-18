@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
-    //"strict": true
-    //"alwaysStrict": true,
-    //"noImplicitAny": true
+    "alwaysStrict": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "strictFunctionTypes": true,
+    "noImplicitAny": true,
+    "strictBindCallApply": true,
+    "noImplicitThis": true,
   }
 }

@@ -96,7 +96,7 @@ export function renderSearchResultsBlock (places: Accommodation[]) : void {
 
 export async function search (searchFormData : SearchInterface)
 {
-  const provider : string[] = searchFormData.provider
+  const provider : FormDataEntryValue[] = searchFormData.provider
   const homy = new HomyRepository()
   const flatRent = new FlatRentRepository()
 

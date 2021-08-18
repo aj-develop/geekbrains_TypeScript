@@ -30,7 +30,7 @@ export class FlatRentRepository implements ProviderInterface {
     return flatRentSdk.search(searchObject)
       .then((response) => {
         //FlatRentRepository.assertIsValidResponse(response)
-        return this.convertFlatRentListResponse(response)
+        return this.convertFlatRentListResponse(response) ?? undefined
       })
   }
 
@@ -47,10 +47,14 @@ export class FlatRentRepository implements ProviderInterface {
     }
   }
 
-  private convertFlatRentListResponse(response: [FlatRentAccommodation]): Accommodation[] {
-    return response.map((item) => {
-      return FlatRentRepository.convertFlatRentResponse(item) }
-    )
+  private convertFlatRentListResponse(response: [FlatRentAccommodation] | null): Accommodation[] | null {
+    if(response != null){
+      return response.map((item) => {
+        return FlatRentRepository.convertFlatRentResponse(item) }
+      )
+    } else {
+      return null
+    }
   }
 
   private static convertFlatRentResponse(item: FlatRentAccommodation): Accommodation {

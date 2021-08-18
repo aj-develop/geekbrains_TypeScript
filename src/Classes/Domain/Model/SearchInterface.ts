@@ -1,8 +1,8 @@
-export interface SearchInterface {
-  checkInDate: string,
+export interface SearchInterface extends Record<string, any> {
+  checkInDate: string ,
   checkOutDate: string,
-  city: string
+  city: string,
   cityCoordinates: string,
   priceLimit: string,
-  provider: string[]
+  provider: FormDataEntryValue[]
 }

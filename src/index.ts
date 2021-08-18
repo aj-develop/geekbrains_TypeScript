@@ -74,11 +74,13 @@ function sortAllResults(accommodations: Accommodation[], event: Event) : void
   const eventTargetElement = <HTMLSelectElement>event.target;
   if (eventTargetElement){
     const index : number = eventTargetElement.options.selectedIndex;
-    if (index) {
-      const methodName = eventTargetElement.options[index].value
-      accommodations.sort(sortByMethod[methodName]);
-      renderBlock('search-results-list', '')
-      renderSearchResultsBlock(accommodations)
+    if (index)  {
+      if (eventTargetElement.options[index]) {
+        const methodName = eventTargetElement.options[index].value
+        accommodations.sort(sortByMethod[methodName]);
+        renderBlock('search-results-list', '')
+        renderSearchResultsBlock(accommodations)
+      }
     }
   }
 }

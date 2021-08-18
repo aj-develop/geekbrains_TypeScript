@@ -16,7 +16,7 @@ export function toggleFavoriteItem (this: HTMLElement) : void
   const favoriteItemsInStorage = favoriteStorage.get()
 
   if (favoriteItemsInStorage){
-    const findIndex = favoriteItemsInStorage.findIndex(place => String(place.getId()) === String(placeIn.id))
+    const findIndex = favoriteItemsInStorage.findIndex(place => String(place.getId()) === String(placeIn['id']))
     if (findIndex >= 0) { // remove item from favoriteItems storage
       favoriteItemsInStorage.splice(findIndex,1)
       this.classList.remove('active');
